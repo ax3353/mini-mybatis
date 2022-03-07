@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mapper namespace="cn.udream.mybatis.mapper.UserMapper">
 
-    <select id = "selectById" parameterType="java.lang.Long" resultType = "cn.udream.mybatis.domain.User">
+    <select id = "selectById" parameterType="long" resultType = "cn.udream.mybatis.domain.User">
         select * from user where id = ?
     </select>
 

@@ -1,8 +1,11 @@
-package cn.udream.mybatis.handler;
+package cn.udream.mybatis.handler.result;
 
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.udream.mybatis.config.Config;
 import cn.udream.mybatis.exception.MybatisException;
+import cn.udream.mybatis.handler.type.handler.TypeHandler;
 
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
@@ -12,8 +15,11 @@ public class ResultHandler {
 
     private final Class<?> resultType;
 
-    public ResultHandler(Class<?> resultType) {
+    private final Config config;
+
+    public ResultHandler(Class<?> resultType, Config config) {
         this.resultType = resultType;
+        this.config = config;
     }
 
     public Object handlerResult(ResultSet resultSet) {
@@ -34,18 +40,11 @@ public class ResultHandler {
     }
 
     private Object getResult(Field field, ResultSet resultSet) {
-        Class<?> type = field.getType();
         try {
-            if (type == Integer.class) {
-                return resultSet.getInt(field.getName());
-            }
-            if (type == String.class) {
-                return resultSet.getString(field.getName());
-            }
-            if (type == Long.class) {
-                return resultSet.getLong(field.getName());
-            }
-            return resultSet.getString(field.getName());
+            // 驼峰转下划线，用以匹配表的字段名，如(createTime -> create_time)
+            String columnName = StrUtil.toUnderlineCase(field.getName());
+            TypeHandler<?> typeHandler = config.getTypeHandler(field.getType());
+            return typeHandler.getResult(resultSet, columnName);
         } catch (SQLException e) {
             throw new MybatisException(e);
         }

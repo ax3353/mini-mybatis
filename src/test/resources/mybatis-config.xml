@@ -16,4 +16,11 @@
         <plugin interceptor="cn.udream.mybatis.plugin.SimpleLogInterceptor"/>
     </plugins>
 
+    <typeHandlers>
+        <typeHandler javaType="localdatetime" handler="cn.udream.mybatis.typeHandler.LocalDateTimeTypeHandler"/>
+    </typeHandlers>
+
+    <typeAliases>
+        <typeAlias alias="localdatetime" type="java.time.LocalDateTime"/>
+    </typeAliases>
 </configuration>
